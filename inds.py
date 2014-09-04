@@ -25,23 +25,60 @@ import sys, os , time
 import hashlib, re
 from threading import Thread
 
+__SRC_DIR__ = os.path.dirname(__file__)
+
 # ###################################
 
-INDS_URL = 'http://210.45.114.81/inds/'
+
+class INFO() :
+    def __init__( self, f ) :
+        names, values = [], []
+        for line in f :
+            if line.startswith( '#' ) :
+                name = line[1:].strip() 
+                if re.match( r'[a-zA-Z_][a-zA-Z0-9_]*$', name ) :
+                    names.append( name )
+                else :
+                    # invalid variable name
+                    return
+            elif line.startswith( '$' ) :
+                if len( names ) - len( values ) == 1 :
+                    values.append( line[1:].strip() )
+                else :
+                    # name and value do not match
+                    return
+        for i, name in enumerate( names ) :
+            setattr( self, name, values[i] )
+
+# the file named "Info" should look like this
+r"""
+# INDS_URL
+$ http://some.url
+# DB_PASSWORD
+$ database_password_string
+# GMAIL_USERNAME
+$ someone@gmail.com
+# GMAIL_PASSWORD
+$ gmail_password_string
+"""
+info = INFO( open( os.path.join( __SRC_DIR__, 'Info' ) ) )
+
+
+INDS_URL = info.INDS_URL
 MAIL_MSG_TAIL = u'\n\n%s\n本邮件为系统自动发送，请勿直接回复邮件到此邮箱' % ( '-' * 50 )
 
 # Admin information
 # a mail box for sending mail only
-GMAIL = 'icts.ustc@gmail.com'
+GMAIL = info.GMAIL_USERNAME
 web.config.smtp_server = 'smtp.googlemail.com'
 web.config.smtp_port = 587
 web.config.smtp_username = GMAIL
-web.config.smtp_password = '_icts_ustc_'
+web.config.smtp_password = info.GMAIL_PASSWORD
 web.config.smtp_starttls = True
 #web.config.debug = False
 
 # Database information
-DBPW = 'jq7S0nb8zQ'
+DBPW = info.DB_PASSWORD
 
 # Table names
 USR = 'users'
@@ -162,7 +199,7 @@ db = web.database( dbn='mysql' , host='localhost' , user='inds' , db='inds' , pw
 AdminEmails = get_admin_emails( db )
 app = web.application( urls , globals() )
 session = web.session.Session( app , web.session.DBStore( db , 'sessions' ) , initializer={'user':None} )
-render = web.template.render( os.path.join( os.path.dirname(__file__) , 'templates' ) , globals={'session': session} )
+render = web.template.render( os.path.join( __SRC_DIR__ , 'templates' ) , globals={'session': session} )
 
 # ###################################
 class redirect :
