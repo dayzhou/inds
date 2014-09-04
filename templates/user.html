@@ -1,0 +1,652 @@
+$def with ( page , arg='' )
+$# arg should be a tuple
+
+$def hline( width ) :
+    <div style="border-bottom: 1px solid #3399FF ; width: $(width)px ;"></div>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>LOGIN</title>
+
+<style type="text/css">
+td{
+    word-break: break-all;
+    word-wrap: break-all;
+    align: center;
+    border: 0px;
+}
+.table_border{
+    border-left:
+    1px solid #3399FF;
+    border-top: 1px solid #3399FF;
+    border-spacing: 0px;
+}
+.table_border td{
+    border-bottom: 1px solid #3399FF;
+    border-right: 1px solid #3399FF;
+}
+
+.left{
+    width: 144px;
+    margin-top: 10px;
+    margin-left: 5px;
+    float: left;
+}
+.left_box{
+    width: 110px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 15px 15px 15px 0px;
+    text-align: left;
+    font-size: 14px;
+    color: #3399FF;
+    border-right: 1px solid #3399FF;
+    float: right;
+}
+
+.right{
+    margin-left: 20px;
+    margin-right: 5px;
+    float: left;
+}
+
+.right_box{
+    margin-top: 20px;
+    padding: 5px 15px 10px 15px;
+    font-size: 14px;
+    border: 0px solid #3399FF;
+}
+.right_box_title{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    width: 400px;
+    font-size: 16px;
+    border-bottom: 1px solid #3399FF;
+}
+
+.form{
+    margin-left: 50px;
+    width: 650px;
+    float: left;
+}
+.form table{
+    border-spacing: 12px;
+}
+.form th{
+    text-align: right;
+    font-weight: normal;
+    font-size: 14px;
+    font-family: serif;
+}
+
+.left a{
+    color: #3399FF;
+    text-decoration: none;
+}
+.right_box a{
+    color: fuchsia;
+    text-decoration: underline;
+}
+</style>
+
+</head>
+<body>
+
+$if session.user.usertype == 'R' :
+    <div class="left">
+        <div class="left_box">
+            查看数据库
+            <ul>
+                <li><a href="rootuser?name=applicants">帐号申请</a></li>
+                <li><a href="rootuser?name=publication">文章索引</a></li>
+                <li><a href="rootuser?name=users">用户列表</a></li>
+            </ul>
+            <p><a href="generaluser?name=number">申请编号</a></p>
+            <p><a href="rootuser?name=passwd">修改密码</a></p>
+            <p><a href="rootuser?name=email">修改邮箱</a></p>
+            <p><a href="rootuser?name=errorlog">错误日志</a></p>
+            <p><a href="rootuser?name=help">帮助</a></p>
+        </div>
+    
+        <div class="left_box"><p>
+            <a href="logout">Logout</a>
+            </p>$:hline(100)<p>
+            <a href="http://icts.ustc.edu.cn/chinese/index.html" target='_blank'>ICTS</a>
+        </p></div>
+    </div>
+
+
+$elif session.user.usertype == 'S' :
+    <div class="left">
+        <div class="left_box">
+            <p><a href="standarduser?name=publication">个人数据库</a></p>
+            <p><a href="generaluser?name=number">申请编号</a></p>
+            <p><a href="standarduser?name=passwd">修改密码</a></p>
+            <p><a href="standarduser?name=email">修改邮箱</a></p>
+            <p><a href="standarduser?name=help">帮助</a></p>
+        </div>
+    
+        <div class="left_box">
+            <p><a href="logout">Logout</a></p>
+            $:hline(100)
+            <p><a href="http://icts.ustc.edu.cn/chinese/index.html" target='_blank'>ICTS</a></p>
+        </div>
+    </div>
+
+
+<div class="right">
+
+$if page == 'FB_SHOW_APP' :
+    <div class="right_box">
+        <div class="right_box_title">待审核帐号列表</div>
+        <table class='table_border'>
+            <tr align=center>
+                <td width=60>ID</td><td width=120>用户名</td><td width=280>邮箱</td>
+                <td width=120>真实姓名</td><td width=100>申请日期</td>
+            </tr>
+            $for app in arg[0] :
+                <tr align=center>
+                <td width=60>$app.id</td> <td width=120>$app.username</td> <td width=280>$app.email</td>
+                <td width=120>$app.realname</td> <td width=100>$app.date</td>
+                </tr>
+                $if loop.first : $ id = app.id
+        </table>
+        <p></p>
+        <form method=post action="set_censor_state">
+            <table border=0><tr>
+                <td width=50 align=center>ID</td>
+                <td width=150 align=left>
+                    $if arg[0] :
+                        <input type=text name=id size=5 value=$id />
+                    $else :
+                        <input type=text name=id size=5 value='' />
+                </td>
+                <td width=100 align=center>审核结果</td>
+                <td width=80 align=left><input type=radio name=censor value="P" checked /> PASS </td>
+                <td width=150 align=left><input type=radio name=censor value="F" /> FAIL</td>
+                <td width=140 align=left><input type=submit name=send value='确认审核结果' /></td>
+            </tr></table>
+        </form>
+    </div>
+    
+    <div class="right_box">
+        <div class="right_box_title">通过审核帐号列表</div>
+        <table class='table_border'>
+            <tr align=center>
+                <td width=60>ID</td> <td width=120>用户名</td> <td width=280>邮箱</td>
+                <td width=120>真实姓名</td> <td width=100>申请日期</td>
+            </tr>
+            $for app in arg[1] :
+                <tr align=center>
+                <td width=60>$app.id</td> <td width=120>$app.username</td> <td width=280>$app.email</td>
+                <td width=120>$app.realname</td> <td width=100>$app.date</td>
+                </tr>
+        </table>
+    </div>
+    
+    <div class="right_box">
+        <div class="right_box_title">未通过审核帐号列表</div>
+        <table class='table_border'>
+            <tr align=center>
+            <td width=60>ID</td> <td width=120>用户名</td> <td width=280>邮箱</td>
+            <td width=120>真实姓名</td> <td width=100>申请日期</td>
+            </tr>
+            $for app in arg[2] :
+                <tr align=center>
+                <td width=60>$app.id</td> <td width=120>$app.username</td> <td width=280>$app.email</td>
+                <td width=120>$app.realname</td> <td width=100>$app.date</td>
+                </tr>
+        </table>
+    </div>
+
+
+$elif page == 'FB_SHOW_PUB' :
+    $if session.user.usertype == 'R' :
+        <div class="right_box">
+            <div class="right_box_title">文章索引列表</div>
+            <p>
+            $for n in range( len( arg[1] ) ) :
+                <a href="rootuser?name=publication&page=$n">ID : $arg[1][n][0] - $arg[1][n][1]</a> &nbsp; &nbsp;
+            </p>
+            <form method=post action="set_publication_table">
+            <table class="table_border">
+                <tr align=center>
+                    <td width=50>ID</td> <td width=70>用户</td>
+                    <td width=50>年</td> <td width=40>编号</td>
+                    <td width=220>文章标题</td> <td width=140>作者</td>
+                    <td width=130>刊物</td> <td width=100>arXiv URL</td>
+                    <td width=100>Journal URL</td> <td width=90>申请日期</td>
+                </tr><tr align=center>
+                    <td><input type=text name=id size=3 value='' /></td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td><input type=text name=title size=24 value='' /></td>
+                    <td><input type=text name=authors size=14 value='' /></td>
+                    <td><input type=text name=journal size=13 value='' /></td>
+                    <td><input type=text name=arxiv_url size=10 value='' /></td>
+                    <td><input type=text name=journal_url size=10 value='' /></td>
+                    <td>-</td>
+                </tr>
+
+                $for pub in arg[0] :
+                    <tr align=center>
+                    <td width=50>$pub.id</td> <td width=70>$pub.username</td>
+                    <td width=50>$pub.year</td> <td width=40>$pub.number</td>
+                    <td width=220>$pub.title</td> <td width=140>$pub.authors</td>
+                    <td width=130>$pub.journal</td>
+                    $if pub.arxiv_url[:7] == 'http://' :
+                        <td width=100><a href="$pub.arxiv_url" target="_blank">点击查看</a></td>
+                    $else :
+                        <td width=100>无链接</td>
+                    $if pub.journal_url[:7] == 'http://' :
+                        <td width=100><a href="$pub.journal_url" target="_blank">点击查看</a></td>
+                    $else :
+                        <td width=100>无链接</td>
+                    <td width=90>$pub.date</td>
+                    </tr>
+
+            </table>
+            <p></p>
+        
+            <table align=center><tr>
+                <td width=150 align=center><select name=option size=1><option value='alter'>修改<option value='delete'>删除</select></td>
+                <td width=150 align=center><input type=submit name=send /></td>
+                <td width=150 align=center><input type=reset /></td>
+            </tr></table>
+            </form>
+        </div>
+    
+    $elif session.user.usertype == 'S' :
+        <div class="right_box">
+            <div class="right_box_title">&lt; $session.user.realname &gt; 文章索引列表</div>
+            <p>
+            $for n in range( len( arg[1] ) ) :
+                <a href="standarduser?name=publication&page=$n">ID : $arg[1][n][0] - $arg[1][n][1]</a> &nbsp; &nbsp;
+            </p>
+            <form method=post action="set_publication_table">
+            <table class="table_border">
+                <tr align=center>
+                    <td width=50>ID</td> <td width=50>年</td>
+                    <td width=40>编号</td> <td width=240>文章标题</td>
+                    <td width=150>作者</td> <td width=140>刊物</td>
+                    <td width=100>arXiv URL</td> <td width=100>Journal URL</td>
+                    <td width=90>申请日期</td>
+                </tr><tr align=center>
+                    <td><input type=text name=id size=3 value='' /></td>
+                    <td>-</td><td>-</td>
+                    <td><input type=text name=title size=27 value='' /></td>
+                    <td><input type=text name=authors size=16 value='' /></td>
+                    <td><input type=text name=journal size=15 value='' /></td>
+                    <td><input type=text name=arxiv_url size=10 value='' /></td>
+                    <td><input type=text name=journal_url size=10 value='' /></td>
+                    <td>-</td>
+                </tr>
+
+                $for pub in arg[0] :
+                    <tr align=center>
+                    <td width=50>$pub.id</td> <td width=50>$pub.year</td>
+                    <td width=40>$pub.number</td> <td width=240>$pub.title</td>
+                    <td width=150>$pub.authors</td> <td width=140>$pub.journal</td>
+                    $if pub.arxiv_url[:7] == 'http://' :
+                        <td width=100><a href="$pub.arxiv_url" target="_blank">点击查看</a></td>
+                    $else :
+                        <td width=100>无链接</td>
+                    $if pub.journal_url[:7] == 'http://' :
+                        <td width=100><a href="$pub.journal_url" target="_blank">点击查看</a></td>
+                    $else :
+                        <td width=100>无链接</td>
+                    <td width=90>$pub.date</td>
+                    </tr>
+
+            </table>
+            <p></p>
+        
+            <table align=center><tr>
+                <td width=150 align=center><select name=option size=1><option value='alter'>修改</select></td>
+                <td width=150 align=center><input type=submit name=send /></td>
+                <td width=150 align=center><input type=reset /></td>
+            </tr></table>
+            </form>
+        </div>
+
+
+$elif page == 'FB_SHOW_USR' :
+    <div class="right_box">
+        <div class="right_box_title">用户列表</div>
+        <form method=post action="set_users_table">
+            <table class="table_border">
+                <tr align=center>
+                    <td width=160>用户名</td> <td width=250>邮箱</td> <td width=180>真实姓名</td> <td width=180>用户类型</td>
+                </tr><tr align=center>
+                    <td><input type=text name=username size=18 value='' /></td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>
+                        <input type=radio name=usertype value='S' checked /> 标准用户
+                        <input type=radio name=usertype value='R' /> 管理员
+                    </td>
+                </tr>
+
+                $for usr in arg[0] :
+                    <tr align=center>
+                    <td width=160>$usr.username</td> <td width=250>$usr.email</td>
+                    <td width=180>$usr.realname</td> <td width=180>$usr.usertype</td>
+                    </tr>
+
+            </table>
+            <p></p>
+            
+            <table align=center><tr>
+                <td width=150 align=center><select name=option size=1>
+                    <option value='alter'>修改<option value='delete'>删除</select>
+                </td>
+                <td width=150 align=center><input type=submit name=send /></td>
+            </tr></table>
+        </form>
+    </div>
+
+
+$elif page == 'FB_OP_NUMBER' :
+    <div class="right_box">
+        <div class="right_box_title">如果您确实需要一个文章编号，请点击下面的链接确认</div>
+        <p><a href="generaluser?name=confirm_number">Yes, I confirm my request for a number!<a></p>
+    </div>
+
+
+$elif page == 'FB_MSG_NUMBER' :
+    <div class="right_box">
+        <div class="right_box_title">索引号已发送至您的邮箱，您的索引号为：</div>
+        <p><font color=red>$arg[0]</font></p>
+    </div>
+
+
+$elif page == 'FB_OP_PASSWD' :
+    <div class="right_box">
+        <div class="right_box_title">您需要先输入当前密码才能设置新密码</div>
+        <form method=post action="generaluser">
+            <div class='form'>
+            <table><tr>
+                <td>Current Password</td>
+                <td><input type=password name=password size=30 value='$arg.password'>$arg.info_password</td>
+            </tr><tr>
+                <td>New Password</td>
+                <td><input type=password name=newpassword size=30 value='$arg.newpassword'>$arg.info_newpassword</td>
+            </tr><tr>
+                <td>Repeat New Password</td>
+                <td><input type=password name=newpw2 size=30 value='$arg.newpw2'>$arg.info_newpw2</td>
+            </tr><tr>
+                <td></td><td><input type=submit name=passwd value=Submit></td>
+            </tr></table>
+            </div>
+        </form>
+    </div>
+
+
+$elif page == 'FB_OP_EMAIL' :
+    <div class="right_box">
+        <div class="right_box_title">您需要输入当前密码才能设置新邮箱</div>
+        <form method=post action="generaluser">
+            <div class='form'>
+            <table><tr>
+                <td>Password</td>
+                <td><input type=password name=password size=30 value='$arg.password'>$arg.info_password</td>
+            </tr><tr>
+                <td>New Email</td>
+                <td><input type=text name=newemail size=30 value='$arg.newemail'>$arg.info_newemail</td>
+            </tr><tr>
+                <td></td><td><input type=submit name=email value=Submit></td>
+            </tr></table>
+            </div>
+        </form>
+    </div>
+
+
+$elif page == 'FB_MSG_PWCHANGED' :
+    <div class="right_box">
+        <p>请牢记您的新密码</p>
+    </div>
+
+
+$elif page == 'FB_MSG_EMCHANGED' :
+    <div class="right_box">
+        <p>您的新邮箱应会收到一份我们发出的通知邮件，如果您未收到，说明您填写了错误的邮箱地址：&lt; $arg[0] &gt;</p>
+    </div>
+
+
+$elif page == 'FB_OP_CENSOR' :
+    <div class="right_box">
+        $if arg[0] == 'FB_FAIL_NEEDID' :
+            $if arg[1] :
+                <p>无效的ID（&lt; $arg[1] &gt; 不是整数）</p>
+            $else :
+                <p>需要先指定 <b>ID</b> 才能设置审核状态</p>
+        $elif arg[0] == 'FB_FAIL_NOTEXIST' :
+            <p>ID为 &lt; <b>$arg[1]</b> &gt; 的 <b>待审核</b> 用户不存在</p>
+        $elif arg[0] == 'FB_FAIL_USERNAME_EXIST' :
+            <p><font color=red>用户名为 &lt;$arg[1]&gt; 的用户已存在</font></p>
+        $elif arg[0] == 'FB_FAIL_EMAIL_EXIST' :
+            <p><font color=red>地址为 &lt;$arg[1]&gt; 的邮箱已经被使用</font></p>
+        $elif arg[0] == 'P' :
+            <p>用户名为 &lt; <b>$arg[1]</b> &gt; 的申请人审核 <b>通过</b></p>
+        $elif arg[0] == 'F' :
+            <p>用户名为 &lt; <b>$arg[1]</b> &gt; 的申请人审核 <b>未通过</b></p>
+    </div>
+
+
+$elif page == 'FB_OP_PUB' :
+    <div class="right_box">
+        $if arg[0] == 'FB_OP_ALTER' :
+            $if arg[1] == 'FB_FAIL_NEEDID' :
+                $if arg[2] :
+                    <p>无效的ID（&lt; $arg[2] &gt; 不是整数）</p>
+                $else :
+                    <p>需要先指定 <b>ID</b> 才能修改文章索引记录</p>
+            $elif arg[1] == 'FB_FAIL_NOTEXIST' :
+                <p>ID为 &lt; <b>$arg[2]</b> &gt; 的文章索引记录不存在</p>
+            $elif arg[1] == 'FB_FAIL_NOTALLOWED' :
+                <p>您没有权限修改其他用户申请的文章编号（ID为 &lt;$arg[2]&gt;）的信息（即使您是Coauthor）。您可以通过您的Coauthor或管理员来修改信息。</p>
+            $elif arg[1] == 'FB_MSG_SUCCEED' :
+                <p>成功修改ID为 &lt; <b>$arg[2]</b> &gt; 的文章索引记录</p>
+            $elif arg[1] == 'FB_MSG_UNCHANGED' :
+                <p>输入信息不足，未修改任何文章索引记录</p>
+        $elif arg[0] == 'FB_OP_DELETE' :
+            $if arg[1] == 'FB_FAIL_NEEDID' :
+                $if arg[2] :
+                    <p>无效的ID（&lt; $arg[2] &gt; 不是整数）</p>
+                $else :
+                    <p>需要先指定 <b>ID</b> 才能删除文章索引记录</p>
+            $elif arg[1] == 'FB_FAIL_NOTEXIST' :
+                <p>ID为 &lt; <b>$arg[2]</b> &gt; 的文章索引记录不存在</p>
+            $elif arg[1] == 'FB_MSG_SUCCEED' :
+                <p>成功删除ID为 &lt; <b>$arg[2]</b> &gt; 的文章索引记录</p>
+    </div>
+
+
+$elif page == 'FB_OP_USR' :
+    <div class="right_box">
+        $if arg[0] == 'FB_FAIL_NEEDID' :
+            <p>需要先指定 <b>用户名</b> 才能修改或删除用户记录</p>
+        $elif arg[0] == 'FB_FAIL_NOTEXIST' :
+            <p>用户名为 &lt; <b>$arg[1]</b> &gt; 的用户记录不存在</p>
+        $elif arg[0] == 'FB_FAIL_NOTALLOWED' :
+            <p>管理员不可删除自身或把自身降级为标准用户</P>
+        $elif arg[0] == 'FB_MSG_ALTER_SUCCEED' :
+            <p>成功修改用户名为 &lt; <b>$arg[1]</b> &gt; 的用户记录</p>
+        $elif arg[0] == 'FB_MSG_DELETE_SUCCEED' :
+            <p>成功删除用户名为 &lt; <b>$arg[1]</b> &gt; 的用户记录</p>
+    </div>
+
+
+$elif page == 'FB_ERRORLOG' :
+    <div class="right_box" style="width: 800px">
+        <div class="right_box_title">错误日志</div>
+        $for line in arg[0] :
+            <p>* $line.date &nbsp; | &nbsp; $line.time &nbsp; | &nbsp; $line.type<br/>---- $line.arg</p>
+    </div>
+
+
+$elif page == 'FB_STD_HELP' :
+    <div class="right_box" style="width: 800px">
+        <div class="right_box_title">帮助</div>
+        <ul>
+        <li><a href="#number-howto">如何申请文章编号</a></li>
+        <li><a href="#publication-howto">获得文章编号后如何修改文章信息</a></li>
+        <li><a href="#personal-info-howto">如何修改个人信息（密码、邮箱）</a></li>
+        <li><a href="#forgetpw-howto">如果忘记密码</a></li>
+        </ul>
+    </div>
+    <div class="right_box" style="width: 800px"><a name="number-howto"></a>
+        <div class="right_box_title">如何申请文章编号</div>
+        <p>本系统最主要的用途是用来申请交叉中心的文章索引号。</p>
+        <p>申请步骤：</p>
+        <ul>
+            <li>点击左侧的“申请编号”链接，将会出现请求确认的页面（这是为了防止误操作）</li>
+            <li>如果您确认需要一个文章编号，请点击“Yes, I confirm ...”链接，您将会得到一个文章编号</li>
+            <li>获得文章编号后，您的个人数据库中就会添加一条新的记录，请及时更新您文章的标题、作者、刊物等信息</li>
+        </ul>
+    </div>
+    <div class="right_box" style="width: 800px"><a name="publication-howto"></a>
+        <div class="right_box_title">获得文章编号后如何添加文章信息</div>
+        <p>获得文章编号后，您的个人数据库中会自动多出一条记录，其中年份、编号和日期已经自动添加，<br/>
+        您需要自己手动修改的是文章标题、作者和刊物等信息。</p>
+        <p>修改步骤：</p>
+        <ul>
+            <li>点击左侧的“个人数据库”链接，您会在自己的文章列表中看到刚刚申请的编号对应的记录</li>
+            <li>先选择您要修改的文章的ID，将ID数字填入列表中的第一个输入框</li>
+            <li>选择您要修改的信息对应的输入框，填入相应的信息（不填则默认为不变更信息）</li>
+            <li>如果您确认输入无误，点击“Submit”按钮提交到数据库</li>
+        </ul>
+    </div>
+    <div class="right_box" style="width: 800px"><a name="personal-info-howto"></a>
+        <div class="right_box_title">如何修改个人信息</div>
+        <p>您在申请用户帐号后，您提交的信息中有两项可以修改：账户密码和邮箱地址。<br/>
+        另外，您的帐户类型默认为普通用户，不能自己修改，但如果您有足够的理由，可以要求管理员将您提升为管理员用户</p>
+        <p>修改密码方法：</p>
+        <ul>
+        <li>点击左侧边栏的“修改密码”链接</li>
+        <li>输入当前（原始）密码作为验证信息，再输入新密码并确认一次</li>
+        <li>点击“Submit”按钮提交</li>
+        </ul>
+        <p>修改邮箱方法：</p>
+        <ul>
+        <li>点击左侧边栏的“修改邮箱”链接</li>
+        <li>输入当前（原始）密码作为验证信息，再输入新的邮箱</li>
+        <li>如果确认无误，请点击“Submit”按钮提交</li>
+        </ul>
+    </div>
+    <div class="right_box" style="width: 800px"><a name="forgetpw-howto"></a>
+        <div class="right_box_title">如果忘记密码</div>
+        <p>显然，如果忘记密码你是不会看到本页面的（But in case you forget your password after having read this page, it will be useful）</p>
+        <p>如果你忘记了密码：</p>
+        <ul>
+        <li>点击登录页面右下方的“Reset Password”链接</li>
+        <li>输入您的用户名和真实姓名作为验证信息，点击“Submit”提交</li>
+        <li>如果您输入的信息无误，系统会自动以随机方式重设您的密码，并将该密码发送到您的账户对应的邮箱中（这要求您的邮箱必须是有效的邮箱），该邮件可能会被您的邮件管理系统归入垃圾邮件中</li>
+        <li>收到新密码后请尽快登录并修改</li>
+        </ul>
+    </div>
+
+
+$elif page == 'FB_RT_HELP' :
+    <div class="right_box" style="width: 800px">
+        <div class="right_box_title">帮助</div>
+        <ul>
+        <li><a href="#censor-howto">如何审核申请信息</a></li>
+        <li><a href="#publication-howto">如何修改/删除文章信息</a></li>
+        <li><a href="#usertype-howto">如何将标准用户升级为管理员，或反之，或删除用户</a></li>
+        <li><a href="#number-howto">如何申请文章编号</a></li>
+        <li><a href="#personal-info-howto">如何修改个人信息（密码、邮箱）</a></li>
+        <li><a href="#forgetpw-howto">如果忘记密码</a></li>
+        <li><a href="#errorlog-howto">错误日志的作用</a></li>
+        </ul>
+    </div>
+    <div class="right_box" style="width: 800px"><a name="censor-howto"></a>
+        <div class="right_box_title">如何审核申请信息</div>
+        <p>请不要让与交叉中心无关的人员的申请通过审核</p>
+        <p>审核方法：</p>
+        <ul>
+        <li>点击左侧的“帐号申请”链接（默认登录时即显示此页面）</li>
+        <li>在右侧的“待审核帐号列表”中可以看到申请者提交的个人信息，如果有待审核的申请者，它的ID会自动填入“ID”输入框</li>
+        <li>您只需选择相应的通过（PASS）或不通过（FAIL），并“确认审核结果”即可</li>
+        <li>从“通过审核帐号列表”和“未通过审核帐号列表”中可以看到您的审核结果</li>
+        </ul>
+    </div>
+    <div class="right_box" style="width: 800px"><a name="publication-howto"></a>
+        <div class="right_box_title">如何修改/删除文章信息</div>
+        <p>为了避免出现混乱，暂不提供修改年份、编号和日期信息的功能。您可以修改/删除所有用户的文章标题、作者和刊物等信息。</p>
+        <p>修改/删除步骤：</p>
+        <ul>
+            <li>点击左侧的“文章索引”链接，您会看到整个的文章信息列表</li>
+            <li>先选择您要修改的文章的ID，将ID数字填入列表中的第一个输入框</li>
+            <li>（如果你要删除文章则跳过此步骤）选择您要修改的信息对应的输入框，填入相应的信息（不填则默认为不变更信息）</li>
+            <li>在下拉菜单中选择是进行“修改”操作还是“删除”操作</li>
+            <li>如果您确认输入无误，点击“Submit”按钮提交到数据库</li>
+        </ul>
+    </div>
+    <div class="right_box" style="width: 800px"><a name="usertype-howto"></a>
+        <div class="right_box_title">如何将标准用户升级为管理员，或反之，或删除用户</div>
+        <p>注意：为防止出现没有管理员的极端情况，管理员不能将自己降级为普通用户</p>
+        <p>修改用户类型的方法：</p>
+        <ul>
+            <li>点击左侧的“用户列表”链接，在用户名下方的输入框中输入您要修改/删除的用户的用户名</li>
+            <li>（如果要删除用户则跳过此步骤）在用户类型下方选择要修改成的用户类型，R表示管理员（Root），S表示标准用户（Standard）</li>
+            <li>在下拉菜单中选择要进行的是“修改”操作还是“删除”操作</li>
+            <li>如果您确认输入无误，点击“Submit”按钮提交到数据库</li>
+        </ul>
+        <p>没有给管理员直接添加用户的操作权限，管理员如果想要添加一个用户，可以采用下面的迂回方法：</p>
+        <ul>
+            <li>在登录页面，点击“Register”链接，提交一个申请</li>
+            <li>登录到管理页面，通过该审核申请</li>
+        </ul>
+    </div>
+    <div class="right_box"><a name="number-howto"></a>
+        <div class="right_box_title">如何申请文章编号</div>
+        <p>本系统最主要的用途是用来申请交叉中心的文章索引号。</p>
+        <p>申请步骤：</p>
+        <ul>
+            <li>点击左侧的“申请编号”链接，将会出现请求确认的页面（这是为了防止误操作）</li>
+            <li>如果您确认需要一个文章编号，请点击“Yes, I confirm ...”链接，您将会得到一个文章编号</li>
+            <li>获得文章编号后，您的个人数据库中就会添加一条新的记录，请及时更新您文章的标题、作者、刊物等信息</li>
+        </ul>
+    </div>
+    <div class="right_box" style="width: 800px"><a name="personal-info-howto"></a>
+        <div class="right_box_title">如何修改个人信息</div>
+        <p>您在申请用户帐号后，您提交的信息中有两项可以修改：账户密码和邮箱地址。<br/>
+        另外，您的帐户类型默认为普通用户，不能自己修改，但如果您有足够的理由，可以要求管理员将您提升为管理员用户</p>
+        <p>修改密码方法：</p>
+        <ul>
+        <li>点击左侧边栏的“修改密码”链接</li>
+        <li>输入当前（原始）密码作为验证信息，再输入新密码并确认一次</li>
+        <li>点击“Submit”按钮提交</li>
+        </ul>
+        <p>修改邮箱方法：</p>
+        <ul>
+        <li>点击左侧边栏的“修改邮箱”链接</li>
+        <li>输入当前（原始）密码作为验证信息，再输入新的邮箱</li>
+        <li>如果确认无误，请点击“Submit”按钮提交</li>
+        </ul>
+    </div>
+    <div class="right_box" style="width: 800px"><a name="forgetpw-howto"></a>
+        <div class="right_box_title">如果忘记密码</div>
+        <p>显然，如果忘记密码你是不会看到本页面的（But in case you forget your password after having read this page, it will be useful）</p>
+        <p>如果你忘记了密码：</p>
+        <ul>
+        <li>点击登录页面右下方的“Reset Password”链接</li>
+        <li>输入您的用户名和真实姓名作为验证信息，点击“Submit”提交</li>
+        <li>如果您输入的信息无误，系统会自动以随机方式重设您的密码，并将该密码发送到您的账户对应的邮箱中（这要求您的邮箱必须是有效的邮箱），该邮件可能会被您的邮件管理系统归入垃圾邮件中</li>
+        <li>收到新密码后请尽快登录并修改</li>
+        </ul>
+    </div>
+        <div class="right_box" style="width: 800px"><a name="errorlog-howto"></a>
+        <div class="right_box_title">错误日志的作用</div>
+        <p>记录错误日志是为了给系统维护提供方便。用户在使用的过程中，本系统可能会出错，这个错误可能是由于硬件引起的，比如网络不通畅，程序缺少依赖的库等，也有可能是软件引起的，比如程序有BUG。</p>
+        <p>这些错误记录在日志里可以方便管理员了解错误来源以排除错误。默认设定为只显示最近的50条错误记录。</p>
+        <p>如果你无法理解日志给出的错误信息，请联系程序作者：）</p>
+    </div>
+
+</div>
+</body>
