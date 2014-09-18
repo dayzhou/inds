@@ -7,12 +7,12 @@
 
 ### Introduction
 
-This is the "ICTS Number Distributing System" (__INDS__)  
+This is the "ICTS Number Distributing System" (**INDS**)  
 which is designed for distributing article/paper numbers  
 to teachers and students in the "Interdisciplinary Center  
-for Theoretical Study" (__ICTS__) which is a research center  
+for Theoretical Study" (**ICTS**) which is a research center  
 for theoretical physics (String & M- theory, Cosmology,  
 Gravity, Particle physics, ... ). This center affiliates to  
-University of Science and Technology of China (__USTC__).
+University of Science and Technology of China (**USTC**).
 
 ---

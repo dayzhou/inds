@@ -39,13 +39,13 @@ class INFO() :
                 if re.match( r'[a-zA-Z_][a-zA-Z0-9_]*$', name ) :
                     names.append( name )
                 else :
-                    # invalid variable name
+                    print( 'Invalid variable name' )
                     return
             elif line.startswith( '$' ) :
                 if len( names ) - len( values ) == 1 :
                     values.append( line[1:].strip() )
                 else :
-                    # name and value do not match
+                    print( 'Names and values do not match' )
                     return
         for i, name in enumerate( names ) :
             setattr( self, name, values[i] )
@@ -778,6 +778,5 @@ class SetUsersTable :
 
 # ###################################
 #if __name__ == '__main__' :
-application = app.wsgifunc()
 #    app.run()
-
+application = app.wsgifunc()

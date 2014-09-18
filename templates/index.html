@@ -90,6 +90,28 @@ body{ margin: 0px auto; }
     color: fuchsia;
     text-decoration: underline;
 }
+
+.Button {
+	background-color:#ffffff;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	border-radius:10px;
+	border:1px solid #87d2fa;
+	display:inline-block;
+	cursor:pointer;
+	color:#000000;
+	font-family:Trebuchet MS;
+	font-size:14px;
+	padding:2px 20px;
+	text-decoration:none;
+}
+.Button:hover {
+	background-color:#dbf1ff;
+}
+.Button:active {
+	position:relative;
+	top:1px;
+}
 </style>
 
 </head>
@@ -117,7 +139,7 @@ body{ margin: 0px auto; }
 
 $if page == 'FB_FORM_LOGIN' :
     <div class="right_box">
-        <div class="right_box_title"><p>登录（ Not a registered user? <a href="register"> Register</a> ）</p></div>
+        <div class="right_box_title"><p>Login（ Not a registered user? <a href="register"> Register</a> ）</p></div>
         <form method=post action="login">
             <div class='form'>
             <table><tr>
@@ -129,7 +151,7 @@ $if page == 'FB_FORM_LOGIN' :
                 <td>Password</td>
                 <td><input type=password name=password size=30 value='$arg.password'></td>
             </tr><tr>
-                <td></td><td><input type=submit value=Login></td>
+                <td></td><td><input class="Button" type=submit value=Login></td>
             </tr></table>
             </div>
         </form>

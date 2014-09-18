@@ -90,6 +90,28 @@ td{
     color: fuchsia;
     text-decoration: underline;
 }
+
+.Button {
+	background-color:#ffffff;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+	border-radius:10px;
+	border:1px solid #87d2fa;
+	display:inline-block;
+	cursor:pointer;
+	color:#000000;
+	font-family: Trebuchet MS;
+	font-size: 14px;
+	padding: 2px 20px;
+	text-decoration:none;
+}
+.Button:hover {
+	background-color:#dbf1ff;
+}
+.Button:active {
+	position:relative;
+	top:1px;
+}
 </style>
 
 </head>
@@ -167,7 +189,7 @@ $if page == 'FB_SHOW_APP' :
                 <td width=100 align=center>审核结果</td>
                 <td width=80 align=left><input type=radio name=censor value="P" checked /> PASS </td>
                 <td width=150 align=left><input type=radio name=censor value="F" /> FAIL</td>
-                <td width=140 align=left><input type=submit name=send value='确认审核结果' /></td>
+                <td width=140 align=left><input class="Button" type=submit name=send value='确认审核结果' /></td>
             </tr></table>
         </form>
     </div>
@@ -344,7 +366,7 @@ $elif page == 'FB_SHOW_USR' :
                 <td width=150 align=center><select name=option size=1>
                     <option value='alter'>修改<option value='delete'>删除</select>
                 </td>
-                <td width=150 align=center><input type=submit name=send /></td>
+                <td width=150 align=center><input class="Button" type=submit name=send value='确定' /></td>
             </tr></table>
         </form>
     </div>
